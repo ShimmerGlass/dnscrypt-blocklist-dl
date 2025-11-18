@@ -175,7 +175,7 @@ func mergeList(list blockList, to *bufio.Writer, seen map[string]struct{}) error
 		return err
 	}
 
-	defer in.Close()
+	defer func() { _ = in.Close() }()
 
 	bin := bufio.NewScanner(in)
 

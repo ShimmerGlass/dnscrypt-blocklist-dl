@@ -1,0 +1,35 @@
+version: "3"
+
+run: when_changed
+
+vars:
+  BIN: "bin/dnscrypt-blocklist-dl"
+
+env:
+  CGO_ENABLED: 0
+
+tasks:
+  ### run
+
+  run:
+    deps: [build]
+    cmds:
+      - ./{{ .BIN }} {{.CLI_ARGS}}
+
+  ### build
+
+  build:
+    sources:
+      - "**/*.go"
+
+    cmds:
+      - go build -o {{ .BIN }} .
+
+
+  ### tests
+
+  test:
+    cmds:
+      - go test -timeout 3m ./...
+      - go tool errcheck ./...
+      - go tool ineffassign ./...
