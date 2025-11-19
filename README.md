@@ -6,13 +6,14 @@ Use pihole lists with other dns proxies such as [dnscrypt-proxy](https://github.
 
 ## Config
 
-| Key               | Default | Description                                                                    |
-| ----------------- | ------- | ------------------------------------------------------------------------------ |
-| `NLF_TARGET_FILE` | unset   | **Required**, Where to write the file. example: `blocked-names.txt`            |
-| `NLF_TEMP_DIR`    | `/tmp`  | Where to write temporary files                                                 |
-| `NLF_LISTEN_ADDR` | unset   | HTTP server listen address. Set to enable prometheus metrics. example: `:8080` |
-| `NLF_INTERVAL`    | `4h`    | How often to refresh lists                                                     |
-| `NLF_LIST_[NAME]` |         | Name and URL of list to fetch, can be set multiple times for multiple lists    |
+| Key               | Default     | Description                                                                                                       |
+| ----------------- | ----------- | ----------------------------------------------------------------------------------------------------------------- |
+| `NLF_TARGET_FILE` | unset       | **Required**, Where to write the file. example: `blocked-names.txt`                                               |
+| `NLF_TEMP_DIR`    | `/tmp`      | Where to write temporary files                                                                                    |
+| `NLF_LISTEN_ADDR` | unset       | HTTP server listen address. Set to enable prometheus metrics. example: `:8080`                                    |
+| `NLF_INTERVAL`    | `4h`        | How often to refresh lists                                                                                        |
+| `NLF_LIST_[NAME]` |             | Name and URL of list to fetch, can be set multiple times for multiple lists                                       |
+| `NLF_FORMAT`      | `name_only` | Output format. either: `name_only`: only include the domain name (dnscrypt), or `address_and_name`: pihole format |
 
 ## Docker compose
 
@@ -27,7 +28,8 @@ services:
 
    environment:
      NLF_LISTEN_ADDR: :8080
-     NLF_INTERVAL: 3h
+     NLF_INTERVAL: 4h
+     NLF_FORMAT: name_only
 
      NLF_TARGET_FILE: /config/blocked-names.txt
      NLF_TEMP_DIR: /config/blocklists-parts
@@ -40,7 +42,7 @@ services:
 
 ## Metrics
 
-(if enabled with `NLF_LISTEN_ADDR`)
+only available if enabled with `NLF_LISTEN_ADDR`.
 
 - `namelistfetch_list_status`: list last refresh status
 - `namelistfetch_list_reload_time_seconds`: time taken to refresh the list

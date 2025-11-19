@@ -103,7 +103,15 @@ func transform(in io.Reader, out io.Writer) error {
 			continue
 		}
 
-		_, err := bout.WriteString(fields[1])
+		var outLine string
+		switch cfgFormat {
+		case formatNameOnly:
+			outLine = fields[1]
+		case formatAddressAndName:
+			outLine = fmt.Sprintf("%s %s", fields[0], fields[1])
+		}
+
+		_, err := bout.WriteString(outLine)
 		if err != nil {
 			return err
 		}

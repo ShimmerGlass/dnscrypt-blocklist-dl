@@ -16,6 +16,7 @@ const (
 	envTempDir    = "NLF_TEMP_DIR"
 	envListPrefix = "NLF_LIST_" // prefix, eg: NLF_LIST_
 	envInterval   = "NLF_INTERVAL"
+	envFormat     = "NLF_FORMAT"
 )
 
 // config vars
@@ -25,6 +26,12 @@ var (
 	cfgTempDir    string
 	cfgBlocklists []listConfig
 	cfgInterval   time.Duration
+	cfgFormat     string
+)
+
+const (
+	formatNameOnly       = "name_only"
+	formatAddressAndName = "address_and_name"
 )
 
 type listConfig struct {
@@ -44,6 +51,16 @@ func loadConfig() error {
 		}
 	} else {
 		cfgInterval = 4 * time.Hour
+	}
+
+	if v := os.Getenv(envFormat); v != "" {
+		if v != formatNameOnly && v != formatAddressAndName {
+			return fmt.Errorf("invalid %s: expected %s or %s", envFormat, formatNameOnly, formatAddressAndName)
+		}
+
+		cfgFormat = v
+	} else {
+		cfgFormat = formatNameOnly
 	}
 
 	cfgBlocklists, err = getLists()
