@@ -20,4 +20,14 @@ var (
 		Name: "namelistfetch_list_last_fetch_unix",
 		Help: "Last unix timestamp when the list was refreshed",
 	}, []string{"name"})
+
+	metricListSize = promauto.NewGaugeVec(prometheus.GaugeOpts{
+		Name: "namelistfetch_list_size",
+		Help: "Number of entries in list",
+	}, []string{"name"})
+
+	metricSize = promauto.NewGauge(prometheus.GaugeOpts{
+		Name: "namelistfetch_total_size",
+		Help: "Number of entries in output",
+	})
 )

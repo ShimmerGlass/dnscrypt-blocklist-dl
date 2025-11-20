@@ -147,6 +147,9 @@ func mergeLists() error {
 	bTargetTmp := bufio.NewWriter(targetTmp)
 	seen := map[string]struct{}{}
 
+	metricListSize.Reset()
+	metricSize.Set(0)
+
 	for _, list := range cfgBlocklists {
 		err := mergeList(list, bTargetTmp, seen)
 		if err != nil {
@@ -190,11 +193,13 @@ func mergeList(list listConfig, to *bufio.Writer, seen map[string]struct{}) erro
 
 	for bin.Scan() {
 		line := bin.Text()
+		metricListSize.WithLabelValues(list.Name).Inc()
 
 		if _, ok := seen[line]; ok {
 			continue
 		}
 		seen[line] = struct{}{}
+		metricSize.Inc()
 
 		_, err := to.WriteString(line)
 		if err != nil {
